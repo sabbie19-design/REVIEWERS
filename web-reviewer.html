@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Database Management - Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #6a4c93;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        /* Home Page Styles */
+        .home-page {
+            display: block;
+        }
+
+        .topic-selection {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .topic-selection h2 {
+            color: #6a4c93;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(253, 203, 110, 0.3);
+            border-color: #6a4c93;
+        }
+
+        .topic-card.selected {
+            background: linear-gradient(135deg, #6a4c93, #9b59b6);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .mode-selection {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-selection h2 {
+            color: #6a4c93;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mode-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 16px;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(116, 185, 255, 0.4);
+        }
+
+        .mode-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #6a4c93;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 234, 167, 0.4);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Quiz Page Styles */
+        .quiz-page, .flashcard-page, .learn-page {
+            display: none;
+        }
+
+        .quiz-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .quiz-info {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #6a4c93, #9b59b6);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .question-counter {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #6a4c93;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            background: linear-gradient(135deg, #6a4c93, #9b59b6);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-color: #6a4c93;
+            transform: translateX(5px);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+            border-color: #00b894;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, #ff7675, #e84393);
+            color: white;
+            border-color: #e84393;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(116, 185, 255, 0.4);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .show-answer-btn {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #6a4c93;
+        }
+
+        .show-answer-btn:hover {
+            box-shadow: 0 8px 20px rgba(255, 234, 167, 0.4);
+        }
+
+        .explanation {
+            background: linear-gradient(135deg, #dda0dd, #ba55d3);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .explanation h4 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Flashcard Styles */
+        .flashcard {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 300px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 20px;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #6a4c93, #9b59b6);
+            color: white;
+        }
+
+        .flashcard-front h3 {
+            color: #6a4c93;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .flashcard-front .question {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .flashcard-back h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .flashcard-back .answer {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .flip-hint {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Learn Mode Styles */
+        .learn-content {
+            display: grid;
+            gap: 20px;
+        }
+
+        .learn-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .learn-item h3 {
+            background: linear-gradient(135deg, #6a4c93, #9b59b6);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .learn-question {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .learn-options {
+            margin-bottom: 15px;
+        }
+
+        .learn-option {
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .learn-option.correct-answer {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+            font-weight: 600;
+        }
+
+        .statistics {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .stat-item.correct {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+        }
+
+        .stat-item.incorrect {
+            background: linear-gradient(135deg, #ff7675, #e84393);
+            color: white;
+        }
+
+        .stat-item.streak {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #6a4c93;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .quiz-info {
+                justify-content: center;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .control-btn {
+                flex: 1;
+                min-width: auto;
+            }
+            
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Advanced Database Management</h1>
+            <p>Master Distributed Database Concepts with Interactive Learning</p>
+        </div>
+
+        <!-- Home Page -->
+        <div class="home-page" id="homePage">
+            <div class="topic-selection">
+                <h2>📚 Select Topic to Review</h2>
+                <div class="topic-card" data-topic="distributed-db">
+                    <h3>🌐 Advanced Database Management</h3>
+                    <p>Distributed Database Systems, Concurrency Control, Query Processing & More</p>
+                    <small>67 Questions Available</small>
+                </div>
+            </div>
+
+            <div class="mode-selection">
+                <h2>🎯 Choose Study Mode</h2>
+                <div class="mode-grid">
+                    <div class="mode-card" data-mode="quiz">
+                        <h3>🧠 Quiz Mode</h3>
+                        <p>Test your knowledge with interactive multiple choice questions</p>
+                    </div>
+                    <div class="mode-card" data-mode="flashcard">
+                        <h3>🃏 Flashcards</h3>
+                        <p>Study with flip cards for quick review and memorization</p>
+                    </div>
+                    <div class="mode-card" data-mode="learn">
+                        <h3>📖 Learn Mode</h3>
+                        <p>View all questions and answers for comprehensive study</p>
+                    </div>
+                </div>
+                <button class="start-btn" id="startBtn" disabled>Start Learning 🚀</button>
+            </div>
+        </div>
+
+        <!-- Quiz Mode -->
+        <div class="quiz-page" id="quizPage">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <div class="score-display" id="scoreDisplay">Score: 0 / 0</div>
+                    <div class="question-counter" id="questionCounter">Question 1 / 67</div>
+                </div>
+                <button class="home-btn" id="homeBtn">🏠 Home</button>
+            </div>
+
+            <div class="question-card">
+                <div class="question-title" id="questionTitle">Introduction</div>
+                <div class="question-text" id="questionText">Loading question...</div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="explanation" id="explanation">
+                    <h4>💡 Explanation</h4>
+                    <p id="explanationText"></p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" id="prevBtn">⬅️ Previous</button>
+                <button class="show-answer-btn" id="showAnswerBtn">💡 Show Answer</button>
+                <button class="control-btn" id="nextBtn">Next ➡️</button>
+            </div>
+
+            <div class="statistics" id="statistics">
+                <h3>📊 Your Progress</h3>
+                <div class="stat-grid">
+                    <div class="stat-item correct">
+                        <div>Correct</div>
+                        <div id="correctCount">0</div>
+                    </div>
+                    <div class="stat-item incorrect">
+                        <div>Incorrect</div>
+                        <div id="incorrectCount">0</div>
+                    </div>
+                    <div class="stat-item streak">
+                        <div>Streak</div>
+                        <div id="streakCount">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard Mode -->
+        <div class="flashcard-page" id="flashcardPage">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <div class="question-counter" id="flashcardCounter">Card 1 / 67</div>
+                </div>
+                <button class="home-btn" id="flashcardHomeBtn">🏠 Home</button>
+            </div>
+
+            <div class="flashcard" id="flashcard">
+                <div class="flashcard-front">
+                    <h3 id="flashcardTitle">Loading...</h3>
+                    <div class="question" id="flashcardQuestion">Loading question...</div>
+                    <div class="flip-hint">💡 Click to reveal answer</div>
+                </div>
+                <div class="flashcard-back">
+                    <h3>✅ Answer</h3>
+                    <div class="answer" id="flashcardAnswer">Loading answer...</div>
+                    <div class="flip-hint">🔄 Click to go back</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" id="flashcardPrevBtn">⬅️ Previous</button>
+                <button class="control-btn" id="flipBtn">🔄 Flip Card</button>
+                <button class="control-btn" id="flashcardNextBtn">Next ➡️</button>
+            </div>
+        </div>
+
+        <!-- Learn Mode -->
+        <div class="learn-page" id="learnPage">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <div class="question-counter">📚 All 67 Questions</div>
+                </div>
+                <button class="home-btn" id="learnHomeBtn">🏠 Home</button>
+            </div>
+
+            <div class="learn-content" id="learnContent">
+                <!-- Questions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database questions data
+        const questionsData = [
+            // Introduction (23.0)
+            {
+                category: "Introduction (23.0)",
+                question: "A distributed computing system consists of:",
+                options: ["Single centralized site", "Several processing sites interconnected by a computer network", "Disk partitions", "File systems only"],
+                correct: 1,
+                explanation: "A distributed computing system is characterized by having multiple processing sites that are connected through a computer network, allowing them to work together while being geographically separated."
+            },
+            {
+                category: "Introduction (23.0)",
+                question: "Transparency in distributed databases means:",
+                options: ["Exposing internals", "Hiding implementation details from users", "Centralizing queries", "Removing autonomy"],
+                correct: 1,
+                explanation: "Transparency in distributed databases refers to hiding the complexities of distribution from users, making the distributed system appear as if it were a centralized system."
+            },
+            {
+                category: "Introduction (23.0)",
+                question: "Availability is defined as:",
+                options: ["Schema probability", "Probability system is continuously available during a time interval", "Lock speed", "Data fragmentation"],
+                correct: 1,
+                explanation: "Availability in distributed systems is measured as the probability that the system remains operational and accessible during a specific time period."
+            },
+            // 23.1 – Distributed Database Concepts
+            {
+                category: "23.1 – Distributed Database Concepts",
+                question: "Reliability in DDBMS is:",
+                options: ["Probability system is running at a certain time", "Always available", "Schema speed", "Logs"],
+                correct: 0,
+                explanation: "Reliability in Distributed Database Management Systems (DDBMS) refers to the probability that the system is functioning correctly at any given point in time."
+            },
+            {
+                category: "23.1 – Distributed Database Concepts",
+                question: "Partition tolerance means:",
+                options: ["System continues operating while the network is partitioned", "Stops completely", "Replication removed", "Locks skipped"],
+                correct: 0,
+                explanation: "Partition tolerance is a key property in distributed systems, ensuring that the system can continue to operate even when network partitions occur, separating nodes into different groups."
+            },
+            {
+                category: "23.1 – Distributed Database Concepts",
+                question: "One advantage of distributed databases is:",
+                options: ["Improved availability and performance", "Reduced scalability", "Harder expansion", "No localization"],
+                correct: 0,
+                explanation: "Distributed databases offer improved availability through replication and better performance through parallel processing and data locality."
+            },
+            // 23.2 – Data Fragmentation, Replication, and Allocation
+            {
+                category: "23.2 – Data Fragmentation, Replication, and Allocation",
+                question: "Horizontal fragmentation divides:",
+                options: ["Relation into subsets of tuples (rows)", "Attributes", "Logs", "Catalogs"],
+                correct: 0,
+                explanation: "Horizontal fragmentation splits a relation by rows (tuples), where each fragment contains a subset of the rows based on some condition."
+            },
+            {
+                category: "23.2 – Data Fragmentation, Replication, and Allocation",
+                question: "Allocation schema describes:",
+                options: ["Allocation of fragments to nodes", "Normalization", "Recovery strategy", "Logs"],
+                correct: 0,
+                explanation: "An allocation schema defines how data fragments are distributed and assigned to different nodes in the distributed database system."
+            },
+            {
+                category: "23.2 – Data Fragmentation, Replication, and Allocation",
+                question: "Fully replicated distributed database improves:",
+                options: ["Availability", "Update speed", "Centralization", "Fragmentation"],
+                correct: 0,
+                explanation: "Full replication improves availability because if one site fails, the data is still accessible from other sites. However, it may slow down updates since all copies must be updated."
+            },
+            // 23.3 – Concurrency Control and Recovery
+            {
+                category: "23.3 – Concurrency Control and Recovery",
+                question: "Distributed commit requires:",
+                options: ["Updates at all sites before commit", "One site approval", "Ignoring replication", "Manual rollback"],
+                correct: 0,
+                explanation: "In distributed commit protocols, all participating sites must agree and complete their updates before the transaction can be committed globally."
+            },
+            {
+                category: "23.3 – Concurrency Control and Recovery",
+                question: "Voting method grants lock when:",
+                options: ["Majority of copies approve", "Coordinator alone", "One site", "Random"],
+                correct: 0,
+                explanation: "The voting method for distributed concurrency control requires a majority of replica copies to vote in favor before granting a lock."
+            },
+            {
+                category: "23.3 – Concurrency Control and Recovery",
+                question: "Two-phase commit protocol ensures:",
+                options: ["Correctness of distributed commit", "Ignoring transparency", "Skipping logs", "Fragmentation"],
+                correct: 0,
+                explanation: "The two-phase commit protocol ensures atomicity in distributed transactions by guaranteeing that either all sites commit or all sites abort the transaction."
+            },
+            // 23.4 – Transaction Management
+            {
+                category: "23.4 – Transaction Management",
+                question: "Global transaction manager supports:",
+                options: ["Distributed transactions", "Local queries only", "Logs", "Schema"],
+                correct: 0,
+                explanation: "The global transaction manager coordinates transactions that span multiple sites in a distributed database system."
+            },
+            {
+                category: "23.4 – Transaction Management",
+                question: "It coordinates with:",
+                options: ["Transaction managers at multiple sites", "Catalogs only", "Logs", "Users"],
+                correct: 0,
+                explanation: "The global transaction manager works by coordinating with local transaction managers at each participating site to ensure distributed transaction consistency."
+            },
+            {
+                category: "23.4 – Transaction Management",
+                question: "Three-phase commit divides:",
+                options: ["Second commit phase into two subphases", "Voting skipped", "Coordinator removed", "Rollback"],
+                correct: 0,
+                explanation: "Three-phase commit protocol enhances two-phase commit by splitting the commit phase into two subphases: pre-commit and commit, reducing the window of uncertainty."
+            },
+            // 23.5 – Query Processing and Optimization
+            {
+                category: "23.5 – Query Processing and Optimization",
+                question: "First stage of distributed query processing:",
+                options: ["Query mapping", "Localization", "Optimization", "Execution"],
+                correct: 0,
+                explanation: "Query mapping is the initial stage where the global query is mapped to the distributed database schema and fragment information."
+            },
+            {
+                category: "23.5 – Query Processing and Optimization",
+                question: "Key cost in distributed query processing is:",
+                options: ["Data transfer of intermediate and final results", "Schema updates", "Locking", "Logs"],
+                correct: 0,
+                explanation: "The major cost factor in distributed query processing is the communication cost for transferring data between sites, including both intermediate results and final query results."
+            },
+            {
+                category: "23.5 – Query Processing and Optimization",
+                question: "Main advantage of semijoin:",
+                options: ["Minimizing data transfer", "Easy recovery", "Avoiding locks", "Replication"],
+                correct: 0,
+                explanation: "Semijoin operations are used in distributed databases to reduce the amount of data that needs to be transferred between sites during query processing."
+            },
+            // 23.6 – Types of Distributed Database Systems
+            {
+                category: "23.6 – Types of Distributed Database Systems",
+                question: "Homogeneous DDBMS means:",
+                options: ["Same DBMS software at all nodes", "Different software", "Federated", "Logs"],
+                correct: 0,
+                explanation: "A homogeneous distributed database management system uses the same DBMS software at all sites, making integration and management simpler."
+            },
+            {
+                category: "23.6 – Types of Distributed Database Systems",
+                question: "Multidatabase system has:",
+                options: ["Full local autonomy", "No autonomy", "Centralized", "Hybrid"],
+                correct: 0,
+                explanation: "Multidatabase systems preserve the autonomy of individual databases while providing a unified interface for accessing multiple databases."
+            },
+            {
+                category: "23.6 – Types of Distributed Database Systems",
+                question: "Semantic heterogeneity refers to:",
+                options: ["Differences in meaning/interpretation of data", "Same semantics", "Identical queries", "Logs"],
+                correct: 0,
+                explanation: "Semantic heterogeneity occurs when the same data has different meanings or interpretations across different database systems in a distributed environment."
+            },
+            // 23.7 – Distributed Database Architectures
+            {
+                category: "23.7 – Distributed Database Architectures",
+                question: "Multiprocessor architectures include:",
+                options: ["Shared memory, shared disk, shared-nothing", "Homogeneous/heterogeneous", "Centralized/replicated", "Local/global"],
+                correct: 0,
+                explanation: "The three main multiprocessor architectures for distributed databases are shared memory (all processors share memory), shared disk (processors share storage), and shared-nothing (each processor has private memory and storage)."
+            },
+            {
+                category: "23.7 – Distributed Database Architectures",
+                question: "Shared-nothing means:",
+                options: ["Each node has its own memory and disk", "Share everything", "Share only disk", "Share only memory"],
+                correct: 0,
+                explanation: "In a shared-nothing architecture, each processing node has its own private memory and disk storage, with no sharing of resources between nodes."
+            },
+            {
+                category: "23.7 – Distributed Database Architectures",
+                question: "Three-tier client/server architecture includes:",
+                options: ["Client, application server, database server", "Schema/optimizer/executor", "User/network/data dictionary", "Logs"],
+                correct: 0,
+                explanation: "Three-tier architecture separates the presentation layer (client), business logic layer (application server), and data layer (database server) for better scalability and maintainability."
+            },
+            // 23.8 – Distributed Catalog Management
+            {
+                category: "23.8 – Distributed Catalog Management",
+                question: "Centralized catalog means:",
+                options: ["Entire catalog stored at one site", "Fragmented catalog", "Local only", "None"],
+                correct: 0,
+                explanation: "In centralized catalog management, all metadata about the distributed database is stored at a single site, making it easy to maintain but creating a potential single point of failure."
+            },
+            {
+                category: "23.8 – Distributed Catalog Management",
+                question: "Fully replicated catalogs mean:",
+                options: ["Identical copies at each site", "Partial copies", "Central only", "Random"],
+                correct: 0,
+                explanation: "Fully replicated catalogs maintain complete copies of the metadata at every site, improving availability but requiring more storage and complex update procedures."
+            },
+            {
+                category: "23.8 – Distributed Catalog Management",
+                question: "Partially replicated catalogs mean:",
+                options: ["Each site maintains catalog of its local data", "All sites identical", "Central only", "No catalog"],
+                correct: 0,
+                explanation: "In partially replicated catalog management, each site maintains metadata primarily for its local data, with some global information replicated as needed."
+            }
+        ];
+
+        // Application state
+        let currentMode = '';
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let currentStreak = 0;
+        let selectedAnswer = null;
+        let answerRevealed = false;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Topic selection
+            document.querySelectorAll('.topic-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    checkStartButton();
+                });
+            });
+
+            // Mode selection
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    currentMode = this.dataset.mode;
+                    checkStartButton();
+                });
+            });
+
+            // Start button
+            document.getElementById('startBtn').addEventListener('click', startLearning);
+
+            // Home buttons
+            document.getElementById('homeBtn').addEventListener('click', goHome);
+            document.getElementById('flashcardHomeBtn').addEventListener('click', goHome);
+            document.getElementById('learnHomeBtn').addEventListener('click', goHome);
+
+            // Quiz controls
+            document.getElementById('prevBtn').addEventListener('click', previousQuestion);
+            document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+            document.getElementById('showAnswerBtn').addEventListener('click', showAnswer);
+
+            // Flashcard controls
+            document.getElementById('flashcardPrevBtn').addEventListener('click', previousFlashcard);
+            document.getElementById('flashcardNextBtn').addEventListener('click', nextFlashcard);
+            document.getElementById('flipBtn').addEventListener('click', flipCard);
+            document.getElementById('flashcard').addEventListener('click', flipCard);
+        }
+
+        function checkStartButton() {
+            const topicSelected = document.querySelector('.topic-card.selected');
+            const modeSelected = document.querySelector('.mode-card.selected');
+            const startBtn = document.getElementById('startBtn');
+            
+            if (topicSelected && modeSelected) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        }
+
+        function startLearning() {
+            document.getElementById('homePage').style.display = 'none';
+            
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            currentStreak = 0;
+            
+            if (currentMode === 'quiz') {
+                document.getElementById('quizPage').style.display = 'block';
+                loadQuestion();
+                updateQuizStats();
+            } else if (currentMode === 'flashcard') {
+                document.getElementById('flashcardPage').style.display = 'block';
+                loadFlashcard();
+            } else if (currentMode === 'learn') {
+                document.getElementById('learnPage').style.display = 'block';
+                loadAllQuestions();
+            }
+        }
+
+        function goHome() {
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('quizPage').style.display = 'none';
+            document.getElementById('flashcardPage').style.display = 'none';
+            document.getElementById('learnPage').style.display = 'none';
+            
+            // Reset selections
+            document.querySelectorAll('.topic-card, .mode-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            currentMode = '';
+            document.getElementById('startBtn').disabled = true;
+        }
+
+        function loadQuestion() {
+            const question = questionsData[currentQuestionIndex];
+            selectedAnswer = null;
+            answerRevealed = false;
+            
+            document.getElementById('questionTitle').textContent = question.category;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('questionCounter').textContent = `Question ${currentQuestionIndex + 1} / ${questionsData.length}`;
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('showAnswerBtn').style.display = 'inline-block';
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                optionElement.addEventListener('click', () => selectAnswer(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            updateNavigationButtons();
+        }
+
+        function selectAnswer(index) {
+            if (answerRevealed) return;
+            
+            selectedAnswer = index;
+            document.querySelectorAll('.option').forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === index) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+
+        function showAnswer() {
+            if (selectedAnswer === null) {
+                alert('Please select an answer first!');
+                return;
+            }
+            
+            const question = questionsData[currentQuestionIndex];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            document.querySelectorAll('.option').forEach((option, i) => {
+                if (i === question.correct) {
+                    option.classList.add('correct');
+                } else if (i === selectedAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                correctAnswers++;
+                currentStreak++;
+                score++;
+            } else {
+                incorrectAnswers++;
+                currentStreak = 0;
+            }
+            
+            document.getElementById('explanationText').textContent = question.explanation;
+            document.getElementById('explanation').classList.add('show');
+            document.getElementById('showAnswerBtn').style.display = 'none';
+            
+            answerRevealed = true;
+            updateQuizStats();
+        }
+
+        function updateQuizStats() {
+            document.getElementById('scoreDisplay').textContent = `Score: ${score} / ${correctAnswers + incorrectAnswers}`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('streakCount').textContent = currentStreak;
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').disabled = currentQuestionIndex === questionsData.length - 1;
+        }
+
+        // Flashcard functions
+        function loadFlashcard() {
+            const question = questionsData[currentQuestionIndex];
+            document.getElementById('flashcardTitle').textContent = question.category;
+            document.getElementById('flashcardQuestion').textContent = question.question;
+            document.getElementById('flashcardAnswer').innerHTML = `
+                <strong>Answer:</strong> ${question.options[question.correct]}<br><br>
+                <strong>Explanation:</strong> ${question.explanation}
+            `;
+            document.getElementById('flashcardCounter').textContent = `Card ${currentQuestionIndex + 1} / ${questionsData.length}`;
+            
+            // Reset flip state
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            updateFlashcardButtons();
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function previousFlashcard() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadFlashcard();
+            }
+        }
+
+        function nextFlashcard() {
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                loadFlashcard();
+            }
+        }
+
+        function updateFlashcardButtons() {
+            document.getElementById('flashcardPrevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('flashcardNextBtn').disabled = currentQuestionIndex === questionsData.length - 1;
+        }
+
+        // Learn mode functions
+        function loadAllQuestions() {
+            const learnContent = document.getElementById('learnContent');
+            learnContent.innerHTML = '';
+            
+            questionsData.forEach((question, index) => {
+                const learnItem = document.createElement('div');
+                learnItem.className = 'learn-item';
+                
+                learnItem.innerHTML = `
+                    <h3>${question.category} - Question ${index + 1}</h3>
+                    <div class="learn-question">${question.question}</div>
+                    <div class="learn-options">
+                        ${question.options.map((option, i) => `
+                            <div class="learn-option ${i === question.correct ? 'correct-answer' : ''}">
+                                ${String.fromCharCode(65 + i)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation show">
+                        <h4>💡 Explanation</h4>
+                        <p>${question.explanation}</p>
+                    </div>
+                `;
+                
+                learnContent.appendChild(learnItem);
+            });
+        }
+    </script>
+</body>
+</html>
